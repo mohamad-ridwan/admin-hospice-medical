@@ -14,7 +14,8 @@ function InputUpload({
     styleInputImg,
     styleTextArea,
     valueInputImg,
-    styleParagraph
+    styleParagraph,
+    handleEnterSpace
 }) {
     const RenderHTML = ({ text, styleParagraph }) => {
         return <p dangerouslySetInnerHTML={{ __html: text }} style={styleParagraph}></p>
@@ -24,7 +25,7 @@ function InputUpload({
         <>
             <div className="input-upload-card" style={styleWrapp}>
                 <RenderHTML
-                    text={value}
+                    text={label === 'title' ? `<h2 class="title-article">${value}</h2>` : label === 'paragraphHighlight' && value?.length > 0 ? `<div class="highlight-paragraph"><p>"${value}"</p></div>` : value}
                     styleParagraph={styleParagraph}
                 />
                 <label htmlFor={label}>
@@ -33,7 +34,7 @@ function InputUpload({
 
                         <input type="file" accept="image/png, image/jpeg" name={nameInputImg} value={valueInputImg} onChange={handleChangeImg} style={styleInputImg}/>
                     </div>
-                    <textarea name={label} id="" value={value} cols={cols} rows={rows} onChange={handleChange} style={styleTextArea}>
+                    <textarea name={label} id={`${label}InputTxt`} value={value} cols={cols} rows={rows} onChange={handleChange} style={styleTextArea} onKeyUp={handleEnterSpace}>
 
                     </textarea>
                 </label>

@@ -205,7 +205,7 @@ function UploadBlog() {
                         const urlImg = `${firebaseAPI}${nameImg}?alt=media&token=${tokenImg}`
 
                         const classNameImg = 'img-body-content'
-                        const generateImgHtml = `<img alt="" src="${urlImg}" class="${classNameImg}"/>`
+                        const generateImgHtml = `<br/><img alt="" src="${urlImg}" class="${classNameImg}"/><br/>`
                         setInputBlog({
                             ...inputBlog,
                             [nameInput]: `${inputBlog[nameInput]} ${generateImgHtml}`
@@ -269,8 +269,10 @@ function UploadBlog() {
     const handleSubmit = () => {
         validateForm()
             .then(res => {
-                setOnLoading(true)
-                postData()
+                if(window.confirm('uploaded this article?')){
+                    setOnLoading(true)
+                    postData()
+                }
             })
             .catch(err => alert(err.message))
     }
@@ -531,6 +533,44 @@ function UploadBlog() {
         setOnGuide(v)
     }
 
+    const handleEnterSpace = (e, nameInput) => {
+        const inputEl = document?.getElementById(`${nameInput}InputTxt`)
+        const enterPlacePosition = e.target.selectionStart - 1
+
+        if (e?.keyCode === 13) {
+            if (nameInput === 'title' && inputEl) {
+                const joinedSpace = inputBlog[nameInput].slice(0, e.target.selectionStart - 1)
+                const combineText = `${joinedSpace}${inputBlog[nameInput].slice(e.target.selectionStart)}`
+
+                setInputBlog({
+                    ...inputBlog,
+                    [nameInput]: combineText
+                })
+                alert('Unable to space title!')
+
+                setTimeout(() => {
+                    inputEl.selectionStart = inputEl.selectionEnd = enterPlacePosition;
+                    inputEl.focus()
+                }, 0)
+            } else {
+                const joinedSpace = `${inputBlog[nameInput].slice(0, e.target.selectionStart - 1)}${symbolicGenerate.enter.enter1.space1Result}`
+                const combineText = `${joinedSpace}${inputBlog[nameInput].slice(e.target.selectionStart)}`
+
+                setInputBlog({
+                    ...inputBlog,
+                    [nameInput]: combineText
+                })
+
+                if (inputEl) {
+                    setTimeout(() => {
+                        inputEl.selectionStart = inputEl.selectionEnd = enterPlacePosition + 5;
+                        inputEl.focus()
+                    }, 0)
+                }
+            }
+        }
+    }
+
     return (
         <>
             <Heading
@@ -610,6 +650,7 @@ function UploadBlog() {
                         rows={5}
                         cols={8}
                         handleChange={handleChangeInput}
+                        handleEnterSpace={(e) => handleEnterSpace(e, 'title')}
                         styleInputImg={{
                             display: 'none'
                         }}
@@ -628,6 +669,7 @@ function UploadBlog() {
                         cols={8}
                         handleChange={handleChangeInput}
                         nameInputImg='paragraphSatu'
+                        handleEnterSpace={(e) => handleEnterSpace(e, 'paragraphSatu')}
                         styleInputImg={{
                             display: 'none'
                         }}
@@ -643,6 +685,7 @@ function UploadBlog() {
                         cols={8}
                         handleChangeImg={(e) => handleChangeImg(e, 'paragraphBeforeHighlight')}
                         handleChange={handleChangeInput}
+                        handleEnterSpace={(e) => handleEnterSpace(e, 'paragraphBeforeHighlight')}
                         styleParagraph={{
                             backgroundColor: !inputBlog.paragraphBeforeHighlight.trim() ? 'transparent' : '#f1f1f1'
                         }}
@@ -658,6 +701,7 @@ function UploadBlog() {
                         cols={8}
                         handleChangeImg={(e) => handleChangeImg(e, 'paragraphHighlight')}
                         handleChange={handleChangeInput}
+                        handleEnterSpace={(e) => handleEnterSpace(e, 'paragraphHighlight')}
                         styleParagraph={{
                             backgroundColor: !inputBlog.paragraphHighlight.trim() ? 'transparent' : '#f1f1f1'
                         }}
@@ -699,6 +743,7 @@ function UploadBlog() {
                         cols={8}
                         handleChangeImg={(e) => handleChangeImg(e, 'paragraphDua')}
                         handleChange={handleChangeInput}
+                        handleEnterSpace={(e) => handleEnterSpace(e, 'paragraphDua')}
                         styleParagraph={{
                             backgroundColor: !inputBlog.paragraphDua.trim() ? 'transparent' : '#f1f1f1'
                         }}

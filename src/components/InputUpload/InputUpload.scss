@@ -31,9 +31,23 @@
     p{
         white-space: pre-wrap;
         text-align: justify;
-        font-size: 14px;
-        background-color: #f1f1f1;
+        font-size: 15px;
         padding: 8px;
+        color: #777;
+        line-height: 1.5;
+
+        .title-article{
+            color: #000;
+        }
+
+        .highlight-paragraph{
+            padding: 17px;
+            background-color: #fff;
+
+            p{
+                font-style: italic;
+            }
+        }
 
         .img-body-content{
             display: flex;
@@ -45,12 +59,19 @@
         .container-list-body-content{
             display: flex;
             flex-direction: column;
-            font-size: 14px;
+            font-size: 15px;
             margin-left: 20px;
+            list-style: square;
 
             .list-body-content{
-                text-align: start;
+                // display: flex;
                 margin-left: 7px;
+                list-style: square;
+
+                .text-list{
+                    display: flex;
+                    text-align: justify;
+                }
             }
         }
     }

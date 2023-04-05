@@ -28,10 +28,10 @@ const space3Result3 = '<br/><br/><br/>'
 // list
 // create wrapp list
 const wrappList = '(-@;)'
-const wrappListResult = '<ul class="container-list-body-content"><li class="list-body-content">something</li></ul>'
+const wrappListResult = '<br/><ul class="container-list-body-content"><li class="list-body-content"><span class="text-list">something</span></li></ul><br/>'
 // child create wrapp list (default)
 const childList = '-@;'
-const childListResult = '<li class="list-body-content">something</li>'
+const childListResult = '<li class="list-body-content"><span class="text-list">something</span></li>'
 
 
 export const symbolicGenerate = {
