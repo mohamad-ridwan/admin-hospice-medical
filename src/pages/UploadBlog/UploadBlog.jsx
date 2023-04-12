@@ -149,47 +149,63 @@ function UploadBlog() {
 
         const { huruf, enter, createList } = symbolicGenerate
 
-        const generateHtml =
-            // huruf
-            // bold
-            checkAnySymbol(huruf.bold.bold) ?
-                changeSymbolToHtml(huruf.bold.bold, huruf.bold.boldResult)
+        const generateHtml = () => {
+            switch (true) {
+                // huruf
+                // bold
+                case checkAnySymbol(huruf.bold.bold):
+                    return changeSymbolToHtml(huruf.bold.bold, huruf.bold.boldResult);
                 // slash
-                : checkAnySymbol(huruf.slash.slash)
-                    ? changeSymbolToHtml(huruf.slash.slash, huruf.slash.slashResult)
-                    // bold slash
-                    : checkAnySymbol(huruf.boldSlash.boldSlash)
-                        ? changeSymbolToHtml(huruf.boldSlash.boldSlash, huruf.boldSlash.boldSlashResult)
-                        // underline
-                        : checkAnySymbol(huruf.underline.underline)
-                            ? changeSymbolToHtml(huruf.underline.underline, huruf.underline.underlineResult)
-                            // slash underline
-                            : checkAnySymbol(huruf.slashUnderline.slashUnderline)
-                                ? changeSymbolToHtml(huruf.slashUnderline.slashUnderline, huruf.slashUnderline.slashUnderlineResult)
-                                // bold slash underline
-                                : checkAnySymbol(huruf.boldSlashUnderline.boldSlashUnderline)
-                                    ? changeSymbolToHtml(huruf.boldSlashUnderline.boldSlashUnderline, huruf.boldSlashUnderline.boldSlashUnderlineResult)
-                                    // jarak enter
-                                    // space1
-                                    : checkAnySymbol(enter.enter1.space1)
-                                        ? changeSymbolToHtml(enter.enter1.space1, enter.enter1.space1Result)
-                                        : checkAnySymbol(enter.enter2.space2)
-                                            ? changeSymbolToHtml(enter.enter2.space2, enter.enter2.space2Result)
-                                            : checkAnySymbol(enter.enter3.space3)
-                                                ? changeSymbolToHtml(enter.enter3.space3, enter.enter3.space3Result3)
-                                                // list
-                                                // list default
-                                                : checkAnySymbol(createList.container.wrappList)
-                                                    ? changeSymbolToHtml(createList.container.wrappList, createList.container.wrappListResult)
-                                                    // child list (default)
-                                                    : checkAnySymbol(createList.container.childList.childList)
-                                                        ? changeSymbolToHtml(createList.container.childList.childList, createList.container.childList.childListResult)
-                                                        : e.target.value
+                case checkAnySymbol(huruf.slash.slash):
+                    return changeSymbolToHtml(huruf.slash.slash, huruf.slash.slashResult);
+                // bold slash
+                case checkAnySymbol(huruf.boldSlash.boldSlash):
+                    return changeSymbolToHtml(huruf.boldSlash.boldSlash, huruf.boldSlash.boldSlashResult);
+                // underline
+                case checkAnySymbol(huruf.underline.underline):
+                    return changeSymbolToHtml(huruf.underline.underline, huruf.underline.underlineResult);
+                // slash underline
+                case checkAnySymbol(huruf.slashUnderline.slashUnderline):
+                    return changeSymbolToHtml(huruf.slashUnderline.slashUnderline, huruf.slashUnderline.slashUnderlineResult);
+                // bold slash underline
+                case checkAnySymbol(huruf.boldSlashUnderline.boldSlashUnderline):
+                    return changeSymbolToHtml(huruf.boldSlashUnderline.boldSlashUnderline, huruf.boldSlashUnderline.boldSlashUnderlineResult);
+                // jarak enter
+                // space1
+                case checkAnySymbol(enter.enter1.space1):
+                    return changeSymbolToHtml(enter.enter1.space1, enter.enter1.space1Result);
+                // space2
+                case checkAnySymbol(enter.enter2.space2):
+                    return changeSymbolToHtml(enter.enter2.space2, enter.enter2.space2Result);
+                // space3
+                case checkAnySymbol(enter.enter3.space3):
+                    return changeSymbolToHtml(enter.enter3.space3, enter.enter3.space3Result3);
+                // list
+                // list default
+                case checkAnySymbol(createList.container.wrappList):
+                    return changeSymbolToHtml(createList.container.wrappList, createList.container.wrappListResult);
+                // child list (default)
+                case checkAnySymbol(createList.container.childList.childList):
+                    return changeSymbolToHtml(createList.container.childList.childList, createList.container.childList.childListResult);
+                default:
+                    return e.target.value;
+            }
+        }
 
-        setInputBlog({
-            ...inputBlog,
-            [e.target.name]: generateHtml
-        })
+        if (e.target.name === 'title' && generateHtml().includes('<br/>')) {
+            alert('Unable to space title!')
+            if (inputBlog.title.includes('&=')) {
+                setInputBlog({
+                    ...inputBlog,
+                    title: inputBlog.title.replace('&=', '')
+                })
+            }
+        } else {
+            setInputBlog({
+                ...inputBlog,
+                [e.target.name]: generateHtml()
+            })
+        }
     }
 
     const handleChangeImg = (e, nameInput) => {
@@ -269,7 +285,7 @@ function UploadBlog() {
     const handleSubmit = () => {
         validateForm()
             .then(res => {
-                if(window.confirm('uploaded this article?')){
+                if (window.confirm('uploaded this article?')) {
                     setOnLoading(true)
                     postData()
                 }
@@ -571,6 +587,13 @@ function UploadBlog() {
         }
     }
 
+    const handleCancelImgDetailContent = ()=>{
+        setImageDetailContent('')
+        setImgDetailContentForFirebase(null)
+        setNewImageDetailContent(null)
+        document.getElementById('inputFileImageDetailContent').value = null
+    }
+
     return (
         <>
             <Heading
@@ -629,6 +652,7 @@ function UploadBlog() {
                         <InputUpload
                             label='image'
                             title='image'
+                            idInput="inputFirstImg"
                             handleChangeImg={(e) => handleFixImage(e, 'image')}
                             styleTextArea={{
                                 display: 'none',
@@ -714,11 +738,24 @@ function UploadBlog() {
                                 <p>No image</p>
                             )}
                         </div>
+                        <Button
+                            name="Cancel"
+                            classBtn="cancel-img-detail-content"
+                            click={handleCancelImgDetailContent}
+                            style={{
+                                display: newImageDetailContent !== null ? 'flex' : 'none',
+                                marginTop: '0px',
+                                width: '60px',
+                                padding: '7px 0px',
+                                fontSize: '12px'
+                            }}
+                        />
 
                         <InputUpload
                             label='imageDetailContent'
                             title='image detail content (Opsional)'
                             handleChangeImg={(e) => handleFixImage(e, 'imageDetailContent')}
+                            idInput='inputFileImageDetailContent'
                             styleTextArea={{
                                 display: 'none'
                             }}

@@ -15,7 +15,8 @@ function InputUpload({
     styleTextArea,
     valueInputImg,
     styleParagraph,
-    handleEnterSpace
+    handleEnterSpace,
+    idInput
 }) {
     const RenderHTML = ({ text, styleParagraph }) => {
         return <p dangerouslySetInnerHTML={{ __html: text }} style={styleParagraph}></p>
@@ -32,7 +33,7 @@ function InputUpload({
                     <div className="title-input">
                         <span id={label}>{title}</span>
 
-                        <input type="file" accept="image/png, image/jpeg" name={nameInputImg} value={valueInputImg} onChange={handleChangeImg} style={styleInputImg}/>
+                        <input type="file" id={idInput} accept="image/png, image/jpeg" name={nameInputImg} value={valueInputImg} onChange={handleChangeImg} style={styleInputImg}/>
                     </div>
                     <textarea name={label} id={`${label}InputTxt`} value={value} cols={cols} rows={rows} onChange={handleChange} style={styleTextArea} onKeyUp={handleEnterSpace}>
 

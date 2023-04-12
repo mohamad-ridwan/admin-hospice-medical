@@ -4,9 +4,10 @@ import './Button.scss'
 function Button({
     name,
     click,
-    style
+    style,
+    classBtn
 }) {
-  return <button className="btn-card" onClick={click} style={style}>
+  return <button className={classBtn ? `btn-card ${classBtn}` : 'btn-card'} onClick={click} style={style}>
     {name}
   </button>
 }
